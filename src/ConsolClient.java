@@ -19,7 +19,7 @@ public class ConsolClient {
     static String passwd;
 
     public static void main(String[] arg) throws Exception {
-        ConsolI con = (ConsolI) Naming.lookup("rmi://localhost:1099/ConsolApplication");
+        ConsolI con = (ConsolI) Naming.lookup("rmi://188.166.168.107:1099/ConsolApplication");
         
         System.out.println("enter user");
         user = scanner.nextLine();
