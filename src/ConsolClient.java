@@ -1,5 +1,7 @@
 
 import java.rmi.Naming;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 /*
@@ -19,30 +21,41 @@ public class ConsolClient {
     static String passwd;
 
     public static void main(String[] arg) throws Exception {
-        ConsolI con = (ConsolI) Naming.lookup("rmi://188.166.168.107:1099/ConsolApplication");
-        
+        Registry registry = LocateRegistry.getRegistry();
+        ConsolI con = (ConsolI) Naming.lookup("rmi://ubuntu4.saluton.dk:3097/ConsolApplication");
+        System.out.println(con.greetings());
+
         System.out.println("enter user");
         user = scanner.nextLine();
         System.out.println("enter password");
         passwd = scanner.nextLine();
-        System.out.println(con.login(user, passwd));
-        
+        con.login(user, passwd);
+
         while (true) {
-            System.out.println("enter command");
+            System.out.println("enter a command or enter 'help'");
             input = scanner.nextLine();
 
-            if ("add".equals(input)) {
-                System.out.println("enter name");
-                input = scanner.nextLine();
-                con.addData(input);
-                System.out.println(con.getData());
-            } else if ("remove".equals(input)) {
-                System.out.println("enter name");
-                input = scanner.nextLine();
-                con.removeData(input);
-                System.out.println(con.getData());
-            } else {
+            if (null == input) {
                 System.err.println("unknown command");
+            } else switch (input) {
+                case "help":
+                    System.out.println("type: 'add' to add a new name, 'remove' to remove a name");
+                    break;
+                case "add":
+                    System.out.println("enter name");
+                    input = scanner.nextLine();
+                    con.addData(input);
+                    System.out.println(con.getData());
+                    break;
+                case "remove":
+                    System.out.println("enter name");
+                    input = scanner.nextLine();
+                    con.removeData(input);
+                    System.out.println(con.getData());
+                    break;
+                default:
+                    System.err.println("unknown command");
+                    break;
             }
 
         }
