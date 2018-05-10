@@ -1,6 +1,5 @@
 
 import java.rmi.Naming;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
@@ -16,15 +15,15 @@ import java.util.Scanner;
  */
 public class ConsolClient {
 
-    static ConsolI con;
-    static Scanner scanner = new Scanner(System.in);
-    static String input;
-    static String user;
-    static String passwd;
-    static boolean verified;
+    private static ConsolI con;
+    private static Scanner scanner = new Scanner(System.in);
+    private static String input;
+    private static String user;
+    private static String passwd;
 
     public static void main(String[] arg) throws Exception {
         Registry registry = LocateRegistry.getRegistry();
+
         con = (ConsolI) Naming.lookup("rmi://10.16.237.26:3097/ConsolApplication");
         System.out.println(con.greetings());
 
@@ -33,8 +32,15 @@ public class ConsolClient {
         System.out.println("enter password");
         passwd = scanner.nextLine();
 
-        verified = false;
-        userVerification(con);
+            try {
+                con.login(user, passwd);
+                System.out.println("bruger blev verificeret");
+            } catch (Exception e) {
+                System.err.println("login kunne ikke autoriseret " + e);
+                System.out.println("prøv igen");
+            }
+
+        System.out.println(con.help());
 
         while (true) {
             System.out.println("enter a command or enter 'help'");
@@ -45,47 +51,38 @@ public class ConsolClient {
             } else {
                 switch (input) {
                     case "help":
-                        System.out.println("type: 'add' to add a new name, 'remove' to remove a name");
+                        System.out.println(con.help());
                         break;
                     case "add":
-                        System.out.println("enter name");
+                        System.out.println("skriv det navn der skal tilføjes");
                         input = scanner.nextLine();
                         con.addData(input);
                         System.out.println(con.getData());
                         break;
                     case "remove":
-                        System.out.println("enter name");
+                        System.out.println("skriv det navn skal fjernes");
                         input = scanner.nextLine();
                         con.removeData(input);
                         System.out.println(con.getData());
                         break;
-                    default:
-                        System.err.println("unknown command");
+                    case "show*":
+                        System.out.println(con.getData());
                         break;
+                    case "c":
+
+                        break;
+                    case "exit":
+                        System.out.println("farvel");
+                        System.exit(0);
+                        break;
+                    default:
+                        System.err.println("unknown command \n" + con.help());
+                        break;
+
                 }
             }
 
         }
 
-    }
-
-    private static void userVerification(ConsolI con) {
-        
-        System.out.println("enter user");
-        user = scanner.nextLine();
-        System.out.println("enter password");
-        passwd = scanner.nextLine();
-        
-        while (!verified) {
-            try {
-                con.login(user, passwd);
-                System.out.println("bruger blev verificeret");
-                verified = true;
-            } catch (Exception e) {
-                System.err.println("login kunne ikke autoriseret " + e);
-                System.out.println("prøv igen");
-                userVerification(con);
-            }
-        }
     }
 }

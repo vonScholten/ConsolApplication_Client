@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public interface ConsolI extends Remote {
     
     public String greetings() throws java.rmi.RemoteException;
+    public String help() throws java.rmi.RemoteException;
     public void addData(String name) throws java.rmi.RemoteException; 
     public void removeData(String name) throws java.rmi.RemoteException;
     public ArrayList<String> getData() throws java.rmi.RemoteException;
