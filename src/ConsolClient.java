@@ -24,7 +24,8 @@ public class ConsolClient {
     public static void main(String[] arg) throws Exception {
         Registry registry = LocateRegistry.getRegistry();
 
-        con = (ConsolI) Naming.lookup("rmi://10.16.237.26:3097/ConsolApplication");
+        con = (ConsolI) Naming.lookup("rmi://ubuntu4.saluton.dk:3097/ConsolApplication");
+        //con = (ConsolI) Naming.lookup("rmi://192.168.1.7:3097/ConsolApplication");
         System.out.println(con.greetings());
 
         System.out.println("enter user");
